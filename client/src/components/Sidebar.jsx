@@ -27,7 +27,7 @@ const Sidebar = () => {
   if (user.role === 'patient') {
     navItems = [
       { name: 'Overview', path: '/patient/dashboard', icon: LayoutDashboard },
-      { name: 'Book Appointment', path: '/doctors', icon: Calendar },
+      { name: 'Book Appointment', path: '/patient/book-appointment', icon: Calendar },
       { name: 'My Appointments', path: '/patient/appointments', icon: Clock },
       { name: 'My Profile', path: '/patient/profile', icon: Users }
     ];

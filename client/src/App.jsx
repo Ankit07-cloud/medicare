@@ -21,6 +21,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 
 import PatientDashboard from './pages/patient/PatientDashboard';
+import PatientBookAppointment from './pages/patient/PatientBookAppointment';
 import MyAppointments from './pages/patient/MyAppointments';
 import PatientProfile from './pages/patient/PatientProfile';
 
@@ -65,6 +66,14 @@ const AppLayout = () => {
             element={
               <ProtectedRoute allowedRoles={['patient']}>
                 <PatientDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/book-appointment"
+            element={
+              <ProtectedRoute allowedRoles={['patient']}>
+                <PatientBookAppointment />
               </ProtectedRoute>
             }
           />

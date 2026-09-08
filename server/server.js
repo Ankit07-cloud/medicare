@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 const connectDB = require('./config/db');
 const { errorHandler, notFoundHandler } = require('./middleware/errorMiddleware');
 const { requestLogger, sanitizeInput, requestSizeLimiter } = require('./middleware/validationMiddleware');
@@ -29,6 +30,7 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Custom Middleware
 app.use(requestLogger);
@@ -44,6 +46,7 @@ app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/chat', require('./routes/chatRoutes'));
 app.use('/api/blood-bank', require('./routes/bloodBankRoutes'));
+app.use('/api/blood-requests', require('./routes/bloodRequestRoutes'));
 
 // Health check endpoint
 app.get('/', (req, res) => {

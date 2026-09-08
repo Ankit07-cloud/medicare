@@ -13,7 +13,8 @@ import {
   LogOut,
   PlusCircle,
   Clock,
-  Heart
+  Heart,
+  Droplet
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -28,6 +29,7 @@ const Sidebar = () => {
     navItems = [
       { name: 'Overview', path: '/patient/dashboard', icon: LayoutDashboard },
       { name: 'Book Appointment', path: '/patient/book-appointment', icon: Calendar },
+      { name: 'Blood Bank', path: '/patient/blood-bank', icon: Droplet },
       { name: 'My Appointments', path: '/patient/appointments', icon: Clock },
       { name: 'My Profile', path: '/patient/profile', icon: Users }
     ];

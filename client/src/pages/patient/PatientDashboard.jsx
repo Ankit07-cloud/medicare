@@ -5,7 +5,6 @@ import { CartContext } from '../../context/CartContext';
 import API from '../../services/api';
 import Sidebar from '../../components/Sidebar';
 import Chatbot from '../../components/Chatbot';
-import BloodBank from '../../components/BloodBank';
 import { Calendar, Clock, Pill, User, CheckCircle, AlertCircle, ArrowRight, Activity, Plus, Minus, ShoppingCart, Trash2, Bike } from 'lucide-react';
 
 const parseTime = (time) => {
@@ -154,8 +153,6 @@ const PatientDashboard = () => {
             <Calendar className="w-4 h-4" /> Find a Doctor &amp; Book
           </Link>
         </div>
-
-        <BloodBank />
 
         {/* Dashboard Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">

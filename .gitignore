@@ -59,6 +59,7 @@ client/capacitor-cordova-*
 # MongoDB
 *.mongodb
 mongodb-data/
+server/uploads/
 
 # Misc
 *.bak

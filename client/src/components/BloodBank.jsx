@@ -4,7 +4,7 @@ import API from '../services/api';
 
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-const BloodBank = ({ adminMode = false }) => {
+const BloodBank = ({ adminMode = false, onGroupSelect }) => {
   const [availability, setAvailability] = useState(bloodGroups.map((group) => ({ group, available: false })));
   const [loading, setLoading] = useState(false);
   const [savingGroup, setSavingGroup] = useState('');
@@ -53,8 +53,10 @@ const BloodBank = ({ adminMode = false }) => {
         <p className="py-8 text-center text-sm text-slate-500">Loading blood availability...</p>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {availability.map(({ group, available }) => (
-            <div key={group} className={`rounded-2xl border p-3 text-center ${available ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800/60 dark:bg-emerald-950/40' : 'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800'}`}>
+          {availability.map(({ group, available }) => {
+            const Tile = onGroupSelect ? 'button' : 'div';
+            return (
+            <Tile key={group} type={onGroupSelect ? 'button' : undefined} onClick={onGroupSelect ? () => onGroupSelect({ group, available }) : undefined} className={`rounded-2xl border p-3 text-center transition-colors ${available ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800/60 dark:bg-emerald-950/40' : 'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800'} ${onGroupSelect ? 'cursor-pointer hover:border-primary hover:ring-2 hover:ring-primary/10' : ''}`}>
               <span className="block text-lg font-extrabold text-rose-600 dark:text-rose-400">{group}</span>
               <span className={`block text-[11px] font-semibold ${available ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-500 dark:text-slate-400'}`}>{available ? 'Available' : 'Not available'}</span>
               {adminMode && (
@@ -63,8 +65,9 @@ const BloodBank = ({ adminMode = false }) => {
                   <button type="button" disabled={savingGroup === group} onClick={() => updateAvailability(group, false)} className="rounded-lg bg-slate-600 px-1 py-1 text-[10px] font-bold text-white disabled:opacity-50">Deny</button>
                 </div>
               )}
-            </div>
-          ))}
+            </Tile>
+            );
+          })}
         </div>
       )}
     </section>

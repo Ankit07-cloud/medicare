@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import Sidebar from '../../components/Sidebar';
-import BloodBank from '../../components/BloodBank';
 import { AuthContext } from '../../context/AuthContext';
 import API from '../../services/api';
 import { User, Phone, MapPin, Mail, ShieldCheck, CheckCircle } from 'lucide-react';
@@ -45,8 +44,6 @@ const PatientProfile = () => {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">My Health Profile</h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Manage your personal medical information and contact records.</p>
         </div>
-
-        <BloodBank />
 
         {msg && (
           <div className="p-4 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 rounded-2xl text-xs font-bold flex items-center gap-2">

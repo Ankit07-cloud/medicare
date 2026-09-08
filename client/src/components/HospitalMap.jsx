@@ -14,23 +14,23 @@ const hospitalBranches = [
   },
   {
     id: 2,
-    city: 'New Delhi (AIIMS Enclave)',
-    address: '45 Health Boulevard, Connaught Place, New Delhi, Delhi 110001',
-    phone: '+91 11 2688 4400',
+    city: 'Pokhara (Gandaki Regional Unit)',
+    address: 'MediCare Lakeside, Pokhara, Gandaki Province, Nepal',
+    phone: '+977 61 550 4400',
     hours: '24 Hours OPD & In-Patient Facility',
-    lat: 28.6139,
-    lng: 77.2090,
-    embedUrl: 'https://maps.google.com/maps?q=Connaught+Place+New+Delhi&t=&z=13&ie=UTF8&iwloc=&output=embed'
+    lat: 28.2096,
+    lng: 83.9856,
+    embedUrl: 'https://maps.google.com/maps?q=Pokhara+Nepal&t=&z=13&ie=UTF8&iwloc=&output=embed'
   },
   {
     id: 3,
-    city: 'Bengaluru (Tech City Unit)',
-    address: '77 Healthcare Hub, Koramangala 4th Block, Bengaluru, Karnataka 560034',
-    phone: '+91 80 3920 8800',
+    city: 'Biratnagar (Koshi Regional Unit)',
+    address: 'MediCare Koshi Center, Biratnagar, Koshi Province, Nepal',
+    phone: '+977 21 520 8800',
     hours: '24 Hours Super-Specialty Center',
-    lat: 12.9352,
-    lng: 77.6245,
-    embedUrl: 'https://maps.google.com/maps?q=Koramangala+Bengaluru&t=&z=13&ie=UTF8&iwloc=&output=embed'
+    lat: 26.4525,
+    lng: 87.2718,
+    embedUrl: 'https://maps.google.com/maps?q=Biratnagar+Nepal&t=&z=13&ie=UTF8&iwloc=&output=embed'
   }
 ];
 

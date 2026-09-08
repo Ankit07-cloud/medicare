@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HeartPulse, PhoneCall, Mail, MapPin, ShieldCheck, Clock, Droplet, ArrowRight, Facebook, Instagram, X, Globe2 } from 'lucide-react';
+import { HeartPulse, PhoneCall, Mail, MapPin, ShieldCheck, Clock, Droplet, ArrowRight, Facebook, Instagram, Github, X, Globe2 } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -98,6 +98,9 @@ const Footer = () => {
             </a>
             <a href="https://www.instagram.com/medicare-health" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
               <Instagram className="w-4 h-4" /> Instagram
+            </a>
+            <a href="https://github.com/Ankit07-cloud/medi-care" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+              <Github className="w-4 h-4" /> GitHub
             </a>
             <a href="https://www.x.com/medicare-health" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
               <X className="w-4 h-4" /> X

@@ -60,11 +60,7 @@ const AppLayout = () => {
           {/* Public Routes */}
           <Route
             path="/"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
+            element={<Home />}
           />
           <Route path="/about" element={<About />} />
           <Route path="/doctors" element={<Doctors />} />

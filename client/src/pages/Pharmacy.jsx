@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 import API from '../services/api';
 import MedicineCard from '../components/MedicineCard';
 import { CartContext } from '../context/CartContext';
@@ -71,6 +72,10 @@ const Pharmacy = () => {
       setOrderSuccess(error.response?.data?.message || 'Payment went through, but the order could not be created. Please contact support.');
     }
   };
+
+  if (user?.role === 'doctor') {
+    return <Navigate to="/doctor/dashboard" replace />;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 relative">

@@ -5,7 +5,7 @@ import { CartContext } from '../../context/CartContext';
 import API from '../../services/api';
 import Sidebar from '../../components/Sidebar';
 import Chatbot from '../../components/Chatbot';
-import { Calendar, Clock, Pill, User, CheckCircle, AlertCircle, ArrowRight, Activity, Plus, Minus, ShoppingCart, Trash2, Bike } from 'lucide-react';
+import { Calendar, Clock, Pill, User, CheckCircle, AlertCircle, ArrowRight, Activity, Plus, Minus, ShoppingCart, Trash2, Bike, MapPin, Navigation, ExternalLink } from 'lucide-react';
 
 const parseTime = (time) => {
   if (!time) return null;
@@ -40,22 +40,6 @@ const getNextTime = (times) => {
   return upcoming.length ? upcoming[0] : todayTimes[0] || null;
 };
 
-const sampleDeliveryOrder = {
-  orderNumber: 'MC-22871',
-  store: 'MediCare Pharmacy',
-  riderName: 'Aman Verma',
-  riderPhone: '+91 98765 43210',
-  bikeNumber: 'DL-4S-6740',
-  status: 'Out for delivery',
-  eta: 'Today, 10:10 AM',
-  progress: [
-    { label: 'Order confirmed', done: true },
-    { label: 'Packed at pharmacy', done: true },
-    { label: 'Out for delivery', done: true },
-    { label: 'Delivered', done: true }
-  ]
-};
-
 const formatTime = (date) => {
   if (!date) return 'Not scheduled';
   const hours = date.getHours();
@@ -71,10 +55,30 @@ const PatientDashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [gpsLocation, setGpsLocation] = useState(null);
+  const [gpsError, setGpsError] = useState('');
 
   useEffect(() => {
     fetchAppointments();
     fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setGpsError('GPS is not supported by this device.');
+      return undefined;
+    }
+
+    const watchId = navigator.geolocation.watchPosition(
+      ({ coords }) => {
+        setGpsLocation({ latitude: coords.latitude, longitude: coords.longitude, accuracy: coords.accuracy, updatedAt: new Date() });
+        setGpsError('');
+      },
+      () => setGpsError('Allow location access to enable live GPS tracking.'),
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
   const fetchAppointments = async () => {
@@ -125,6 +129,18 @@ const PatientDashboard = () => {
       next: getNextTime(times)
     };
   });
+
+  const activeDeliveryOrder = orders.find((order) => order.deliveryStatus !== 'Cancelled');
+  const deliveryProgress = ['Order Confirmed', 'Packed', 'Out for Delivery', 'Delivered'].map((label) => ({
+    label,
+    done: activeDeliveryOrder ? ['Order Confirmed', 'Packed', 'Out for Delivery', 'Delivered'].indexOf(label) <= ['Order Confirmed', 'Packed', 'Out for Delivery', 'Delivered'].indexOf(activeDeliveryOrder.deliveryStatus) : false
+  }));
+  const mapQuery = gpsLocation
+    ? `${gpsLocation.latitude},${gpsLocation.longitude}`
+    : activeDeliveryOrder?.deliveryAddress || 'Kathmandu Nepal';
+  const mapsUrl = gpsLocation
+    ? `https://www.google.com/maps/dir/?api=1&origin=${gpsLocation.latitude},${gpsLocation.longitude}&destination=${encodeURIComponent(activeDeliveryOrder?.deliveryAddress || '')}`
+    : 'https://www.google.com/maps';
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
@@ -275,40 +291,60 @@ const PatientDashboard = () => {
           <div className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 backdrop-blur-sm">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Delivery Tracker</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Track your medicine order status live.</p>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">GPS Delivery Tracker</h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Live location updates from your device.</p>
               </div>
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary">
                 <Bike className="w-6 h-6" />
               </div>
             </div>
 
+            {!activeDeliveryOrder ? (
+              <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-6 border border-slate-100 dark:border-slate-700/60 text-center">
+                <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">No active medicine delivery to track.</p>
+              </div>
+            ) : (
             <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-4 border border-slate-100 dark:border-slate-700/60 space-y-4">
               <div>
                 <p className="text-xs text-slate-500 dark:text-slate-400">Order</p>
-                <p className="text-lg font-bold text-slate-900 dark:text-white">{sampleDeliveryOrder.orderNumber}</p>
+                <p className="text-lg font-bold text-slate-900 dark:text-white">{activeDeliveryOrder.orderNumber}</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">Rider</p>
-                  <p>{sampleDeliveryOrder.riderName}</p>
-                  <p>{sampleDeliveryOrder.riderPhone}</p>
+                  <p>{activeDeliveryOrder.rider?.name || 'Assigned rider pending'}</p>
+                  <p>{activeDeliveryOrder.rider?.phone || 'Phone unavailable'}</p>
                 </div>
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">Bike number</p>
-                  <p>{sampleDeliveryOrder.bikeNumber}</p>
+                  <p>{activeDeliveryOrder.rider?.vehicle || 'Vehicle unavailable'}</p>
                 </div>
               </div>
               <div className="rounded-2xl bg-white dark:bg-slate-900 p-4 border border-slate-200 dark:border-slate-700">
                 <p className="text-xs text-slate-500 dark:text-slate-400">Current status</p>
-                <p className="text-base font-semibold text-slate-900 dark:text-white">{sampleDeliveryOrder.status}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">ETA: {sampleDeliveryOrder.eta}</p>
+                <p className="text-base font-semibold text-slate-900 dark:text-white">{activeDeliveryOrder.deliveryStatus}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Destination: {activeDeliveryOrder.deliveryAddress}</p>
               </div>
+
+              <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 h-48 bg-slate-100 dark:bg-slate-800">
+                <iframe title="Live GPS delivery location" src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed`} className="w-full h-full border-0" loading="lazy" />
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                  <MapPin className="w-4 h-4 text-primary" />
+                  {gpsLocation ? `GPS accuracy: ${Math.round(gpsLocation.accuracy)} m` : gpsError || 'Waiting for GPS permission...'}
+                </div>
+                <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-primary text-white font-bold">
+                  <Navigation className="w-3.5 h-3.5" /> Open in Maps <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+              {gpsLocation && <p className="text-[11px] text-slate-400">Updated {gpsLocation.updatedAt.toLocaleTimeString()}</p>}
 
               <div className="space-y-4">
                 <div className="relative h-10">
                   <div className="absolute inset-y-4 left-8 w-[calc(100%-7rem)] border-t border-slate-300 dark:border-slate-700" />
-                  {sampleDeliveryOrder.progress.map((step, index) => (
+                  {deliveryProgress.map((step, index) => (
                     <div key={step.label} className="relative inline-flex flex-col items-center text-center w-1/4">
                       <span className={`relative z-10 h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs ${step.done ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
                         {index + 1}
@@ -319,6 +355,7 @@ const PatientDashboard = () => {
                 </div>
               </div>
             </div>
+            )}
           </div>
         </div>
 

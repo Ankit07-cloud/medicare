@@ -23,6 +23,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isDoctor = user?.role === 'doctor';
 
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -33,14 +34,20 @@ const Navbar = () => {
     return '/patient/dashboard';
   };
 
-  const navLinks = [
-    { name: 'About Hospital', path: '/about' },
-    { name: 'Find Doctors', path: '/doctors' },
-    { name: 'Pharmacy Store', path: '/pharmacy' },
-    { name: 'Lab Tests', path: '/lab-tests' },
-    { name: 'Medical Blog', path: '/blog' },
-    { name: 'Contact', path: '/contact' }
-  ];
+  const navLinks = isDoctor
+    ? [
+      { name: 'Dashboard', path: '/doctor/dashboard' },
+      { name: 'Appointments', path: '/doctor/appointments' },
+      { name: 'Profile', path: '/doctor/profile' }
+    ]
+    : [
+      { name: 'About Hospital', path: '/about' },
+      { name: 'Find Doctors', path: '/doctors' },
+      { name: 'Pharmacy Store', path: '/pharmacy' },
+      { name: 'Lab Tests', path: '/lab-tests' },
+      { name: 'Medical Blog', path: '/blog' },
+      { name: 'Contact', path: '/contact' }
+    ];
 
   return (
     <header className="sticky top-0 z-50 glass-panel shadow-sm transition-all duration-300">
@@ -91,18 +98,20 @@ const Navbar = () => {
               <>
                 <ThemeToggle />
 
-                <Link
-                  to="/pharmacy"
-                  className="relative p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                  title="View Pharmacy Cart"
-                >
-                  <ShoppingBag className="w-5 h-5 text-secondary" />
-                  {totalCartCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 bg-secondary text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">
-                      {totalCartCount}
-                    </span>
-                  )}
-                </Link>
+                {!isDoctor && (
+                  <Link
+                    to="/pharmacy"
+                    className="relative p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="View Pharmacy Cart"
+                  >
+                    <ShoppingBag className="w-5 h-5 text-secondary" />
+                    {totalCartCount > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 bg-secondary text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">
+                        {totalCartCount}
+                      </span>
+                    )}
+                  </Link>
+                )}
               </>
             )}
 
@@ -194,17 +203,19 @@ const Navbar = () => {
             ) : (
               <>
                 <ThemeToggle />
-                <Link
-                  to="/pharmacy"
-                  className="relative p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200"
-                >
-                  <ShoppingBag className="w-5 h-5" />
-                  {totalCartCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-secondary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                      {totalCartCount}
-                    </span>
-                  )}
-                </Link>
+                {!isDoctor && (
+                  <Link
+                    to="/pharmacy"
+                    className="relative p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200"
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    {totalCartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-secondary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                        {totalCartCount}
+                      </span>
+                    )}
+                  </Link>
+                )}
 
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

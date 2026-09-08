@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import Sidebar from '../../components/Sidebar';
 import { AuthContext } from '../../context/AuthContext';
 import API from '../../services/api';
-import { Calendar, CheckCircle2, XCircle, FileText, User, Clock, AlertCircle, Award, MessageCircle, Truck, Wallet, TrendingUp } from 'lucide-react';
+import { Calendar, CheckCircle2, XCircle, FileText, User, Clock, AlertCircle, Award, MessageCircle, Wallet, TrendingUp } from 'lucide-react';
 
 const DoctorDashboard = () => {
   const { user } = useContext(AuthContext);
@@ -62,20 +62,6 @@ const DoctorDashboard = () => {
     }
   };
 
-  const sampleDeliveryOrder = {
-    orderNumber: 'MC-90421',
-    patientName: 'Mr. Rajesh Kumar',
-    store: 'MediCare Pharmacy',
-    status: 'Out for delivery',
-    eta: 'Today, 6:00 PM',
-    progress: [
-      { label: 'Order received', done: true },
-      { label: 'Medication packed', done: true },
-      { label: 'Out for delivery', done: false },
-      { label: 'Delivered', done: false }
-    ]
-  };
-
   const pendingCount = appointments.filter(a => a.status === 'Pending').length;
   const approvedCount = appointments.filter(a => a.status === 'Approved').length;
   const completedCount = appointments.filter(a => a.status === 'Completed').length;
@@ -126,8 +112,8 @@ const DoctorDashboard = () => {
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
       <Sidebar />
 
-      <main className="flex-1 p-6 sm:p-10 space-y-8 overflow-y-auto">
-        <div className="bg-white dark:bg-slate-900/90 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 backdrop-blur-sm">
+      <main className="flex-1 w-full max-w-7xl mx-auto p-6 sm:p-10 space-y-8 overflow-y-auto">
+        <div className="bg-white dark:bg-slate-900/90 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm ring-1 ring-slate-900/5 dark:ring-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 backdrop-blur-sm">
           <div>
             <span className="text-xs font-extrabold text-secondary uppercase tracking-widest bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20">
               Doctor Clinical Portal
@@ -141,29 +127,29 @@ const DoctorDashboard = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
-          <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm ring-1 ring-slate-900/5 dark:ring-white/5 hover:shadow-md transition-shadow backdrop-blur-sm">
             <span className="block text-3xl font-extrabold text-slate-900 dark:text-white">{appointments.length}</span>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Patient Queue</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm ring-1 ring-slate-900/5 dark:ring-white/5 hover:shadow-md transition-shadow backdrop-blur-sm">
             <span className="block text-3xl font-extrabold text-amber-500">{pendingCount}</span>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Pending Requests</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm ring-1 ring-slate-900/5 dark:ring-white/5 hover:shadow-md transition-shadow backdrop-blur-sm">
             <span className="block text-3xl font-extrabold text-emerald-500">{approvedCount}</span>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Confirmed Consultations</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm ring-1 ring-slate-900/5 dark:ring-white/5 hover:shadow-md transition-shadow backdrop-blur-sm">
             <span className="block text-3xl font-extrabold text-slate-900 dark:text-white">{performanceScore?.toFixed(1)}</span>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Doctor Performance</span>
           </div>
         </div>
 
         {/* Earnings Overview */}
-        <section className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 backdrop-blur-sm">
+        <section className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm ring-1 ring-slate-900/5 dark:ring-white/5 space-y-5 backdrop-blur-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <span className="text-xs font-extrabold text-secondary uppercase tracking-widest">Earnings Overview</span>
@@ -189,51 +175,8 @@ const DoctorDashboard = () => {
           </div>
         </section>
 
-        {/* Delivery Tracker */}
-        <div className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 backdrop-blur-sm">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <span className="text-xs font-extrabold text-secondary uppercase tracking-widest bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20">
-                Delivery Tracker
-              </span>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-3">Current Pharmacy Order</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Monitor the current medicine delivery for your patient.</p>
-            </div>
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary">
-              <Truck className="w-6 h-6" />
-            </div>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
-            <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-6 border border-slate-200 dark:border-slate-700/60 space-y-4">
-              <div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-[0.18em]">Order</p>
-                <p className="text-lg font-bold text-slate-900 dark:text-white">{sampleDeliveryOrder.orderNumber}</p>
-              </div>
-              <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                <span>{sampleDeliveryOrder.store}</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{sampleDeliveryOrder.status}</span>
-              </div>
-              <div className="rounded-2xl bg-white dark:bg-slate-900 p-4 border border-slate-200 dark:border-slate-700">
-                <p className="text-xs text-slate-500 dark:text-slate-400">Estimated arrival</p>
-                <p className="text-base font-semibold text-slate-900 dark:text-white">{sampleDeliveryOrder.eta}</p>
-              </div>
-            </div>
-            <div className="rounded-2xl bg-white dark:bg-slate-900/80 p-6 border border-slate-200 dark:border-slate-700/60 space-y-3">
-              {sampleDeliveryOrder.progress.map((step) => (
-                <div key={step.label} className="flex items-center gap-3">
-                  <span className={`h-3.5 w-3.5 rounded-full ${step.done ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`} />
-                  <span className={`text-sm ${step.done ? 'text-slate-900 dark:text-white font-semibold' : 'text-slate-500 dark:text-slate-400'}`}>
-                    {step.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* Patient Appointment List */}
-        <div className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm ring-1 ring-slate-900/5 dark:ring-white/5 space-y-6 backdrop-blur-sm">
           <h3 className="text-xl font-bold text-slate-900 dark:text-white">Patient Appointments Management</h3>
 
           {loading ? (

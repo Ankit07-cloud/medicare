@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Doctor = require('../models/Doctor');
 const Appointment = require('../models/Appointment');
 const Medicine = require('../models/Medicine');
+const Order = require('../models/Order');
 
 // @desc    Get dashboard summary statistics for Admin
 // @route   GET /api/admin/stats
@@ -11,7 +12,23 @@ const getAdminStats = async (req, res) => {
     const totalPatients = await User.countDocuments({ role: 'patient' });
     const totalAppointments = await Appointment.countDocuments({});
     const pendingAppointments = await Appointment.countDocuments({ status: 'Pending' });
+    const completedAppointments = await Appointment.countDocuments({ status: 'Completed' });
     const totalMedicines = await Medicine.countDocuments({});
+    const totalOrders = await Order.countDocuments({ deliveryStatus: { $ne: 'Cancelled' } });
+    const salesSummary = await Order.aggregate([
+      {
+        $match: {
+          deliveryStatus: { $ne: 'Cancelled' },
+          paymentStatus: { $in: ['Paid', 'COD'] }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalSales: { $sum: '$totalAmount' }
+        }
+      }
+    ]);
 
     const recentAppointments = await Appointment.find({})
       .populate('patient', 'name email')
@@ -24,6 +41,9 @@ const getAdminStats = async (req, res) => {
       totalPatients,
       totalAppointments,
       pendingAppointments,
+      completedAppointments,
+      totalOrders,
+      totalSales: salesSummary[0]?.totalSales || 0,
       totalMedicines,
       recentAppointments
     });

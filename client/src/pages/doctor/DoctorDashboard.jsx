@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import Sidebar from '../../components/Sidebar';
 import { AuthContext } from '../../context/AuthContext';
 import API from '../../services/api';
-import { Calendar, CheckCircle2, XCircle, FileText, User, Clock, AlertCircle, Award, MessageCircle, Truck } from 'lucide-react';
+import { Calendar, CheckCircle2, XCircle, FileText, User, Clock, AlertCircle, Award, MessageCircle, Truck, Wallet, TrendingUp } from 'lucide-react';
 
 const DoctorDashboard = () => {
   const { user } = useContext(AuthContext);
@@ -81,6 +81,46 @@ const DoctorDashboard = () => {
   const completedCount = appointments.filter(a => a.status === 'Completed').length;
   const performanceScore = doctorProfile?.performanceScore ?? user?.performanceScore ?? 4.8;
   const feedbackCount = doctorProfile?.feedbackCount ?? doctorProfile?.feedback?.length ?? 0;
+  const consultationFee = Number(doctorProfile?.fees ?? user?.fees ?? 0);
+
+  const getAppointmentDate = (appointment) => {
+    const date = new Date(`${appointment.date}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  };
+
+  const paidAppointments = appointments.filter((appointment) => (
+    appointment.status !== 'Cancelled' &&
+    appointment.status !== 'Rejected' &&
+    (appointment.feePaid || appointment.paymentId || appointment.status === 'Completed')
+  ));
+
+  const getEarnings = (period) => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    if (period === 'week') {
+      const day = start.getDay();
+      start.setDate(start.getDate() - (day === 0 ? 6 : day - 1));
+    }
+    if (period === 'month') start.setDate(1);
+    if (period === 'year') {
+      start.setMonth(0, 1);
+    }
+
+    const count = paidAppointments.filter((appointment) => {
+      const appointmentDate = getAppointmentDate(appointment);
+      return appointmentDate && appointmentDate >= start && appointmentDate <= now;
+    }).length;
+
+    return { count, amount: count * consultationFee };
+  };
+
+  const earningsCards = [
+    { label: 'Today', ...getEarnings('today') },
+    { label: 'This Week', ...getEarnings('week') },
+    { label: 'This Month', ...getEarnings('month') },
+    { label: 'This Year', ...getEarnings('year') }
+  ];
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
@@ -121,6 +161,33 @@ const DoctorDashboard = () => {
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Doctor Performance</span>
           </div>
         </div>
+
+        {/* Earnings Overview */}
+        <section className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 backdrop-blur-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <span className="text-xs font-extrabold text-secondary uppercase tracking-widest">Earnings Overview</span>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-1">Consultation income</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Based on paid consultations at ₹{consultationFee.toFixed(2)} per visit.</p>
+            </div>
+            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/10 text-secondary text-xs font-bold">
+              <TrendingUp className="w-4 h-4" /> {paidAppointments.length} paid visits
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            {earningsCards.map((card) => (
+              <div key={card.label} className="rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-5 border border-slate-100 dark:border-slate-700/60">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
+                  <Wallet className="w-5 h-5" />
+                </div>
+                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">{card.label}</p>
+                <p className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">₹{card.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{card.count} consultation{card.count === 1 ? '' : 's'}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Delivery Tracker */}
         <div className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 backdrop-blur-sm">

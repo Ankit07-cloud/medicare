@@ -6,7 +6,7 @@ import API from '../../services/api';
 import Sidebar from '../../components/Sidebar';
 import Chatbot from '../../components/Chatbot';
 import BloodBank from '../../components/BloodBank';
-import { Calendar, Clock, Pill, User, CheckCircle, AlertCircle, ArrowRight, Activity, Plus, Bike } from 'lucide-react';
+import { Calendar, Clock, Pill, User, CheckCircle, AlertCircle, ArrowRight, Activity, Plus, Minus, ShoppingCart, Trash2, Bike } from 'lucide-react';
 
 const parseTime = (time) => {
   if (!time) return null;
@@ -68,7 +68,7 @@ const formatTime = (date) => {
 
 const PatientDashboard = () => {
   const { user } = useContext(AuthContext);
-  const { cart } = useContext(CartContext);
+  const { cart, cartTotal, updateQuantity, removeFromCart } = useContext(CartContext);
   const [appointments, setAppointments] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -324,6 +324,77 @@ const PatientDashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* Cart Summary */}
+        <section className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 backdrop-blur-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <span className="text-xs font-extrabold text-secondary uppercase tracking-widest">Pharmacy Cart</span>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-1">Your medicines ready for checkout</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Review quantities before placing your pharmacy order.</p>
+            </div>
+            <span className="inline-flex items-center gap-2 self-start px-3 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold border border-secondary/20">
+              <ShoppingCart className="w-4 h-4" /> {cart.reduce((total, item) => total + item.quantity, 0)} item(s)
+            </span>
+          </div>
+
+          {cart.length === 0 ? (
+            <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-7 border border-slate-100 dark:border-slate-700/60 text-center space-y-3">
+              <ShoppingCart className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto" />
+              <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Your cart is empty</p>
+              <Link to="/pharmacy" className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-white text-xs font-bold rounded-xl">
+                Browse Pharmacy <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 xl:grid-cols-[1fr_260px] gap-5">
+              <div className="space-y-3">
+                {cart.map((item) => (
+                  <div key={item._id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-4 border border-slate-100 dark:border-slate-700/60">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-11 h-11 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
+                        <Pill className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{item.name}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">₹{Number(item.price || 0).toFixed(2)} each</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between sm:justify-end gap-4">
+                      <div className="inline-flex items-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                        <button onClick={() => updateQuantity(item._id, -1)} aria-label={`Decrease ${item.name} quantity`} className="p-2 text-slate-500 hover:text-secondary">
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="w-8 text-center text-xs font-bold text-slate-900 dark:text-white">{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item._id, 1)} aria-label={`Increase ${item.name} quantity`} className="p-2 text-slate-500 hover:text-secondary">
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <span className="text-sm font-extrabold text-slate-900 dark:text-white">₹{(Number(item.price || 0) * item.quantity).toFixed(2)}</span>
+                      <button onClick={() => removeFromCart(item._id)} aria-label={`Remove ${item.name} from cart`} className="p-2 text-slate-400 hover:text-red-500">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-2xl bg-slate-900 dark:bg-slate-800 p-5 text-white self-start space-y-4">
+                <div className="flex items-center justify-between text-sm text-slate-300">
+                  <span>Subtotal</span>
+                  <span className="font-bold text-white">₹{cartTotal.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between border-t border-slate-700 pt-4">
+                  <span className="text-sm font-bold">Total</span>
+                  <span className="text-xl font-extrabold text-emerald-400">₹{cartTotal.toFixed(2)}</span>
+                </div>
+                <Link to="/pharmacy" className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-secondary hover:bg-secondary-dark text-white text-xs font-bold transition-colors">
+                  Continue to Checkout <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          )}
+        </section>
 
         <div className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 backdrop-blur-sm">
           <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-800">

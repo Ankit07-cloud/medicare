@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import BloodBank from '../../components/BloodBank';
 import API from '../../services/api';
-import { Stethoscope, Users, Calendar, Pill, ShieldCheck, Activity, PlusCircle, ArrowRight } from 'lucide-react';
+import { Stethoscope, Users, Calendar, Pill, ShieldCheck, Activity, PlusCircle, ArrowRight, DollarSign, ShoppingCart, CheckCircle2, Clock3 } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -64,7 +64,7 @@ const AdminDashboard = () => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 backdrop-blur-sm">
               <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
                 <Stethoscope className="w-5 h-5" />
@@ -95,6 +95,38 @@ const AdminDashboard = () => {
               </div>
               <span className="block text-3xl font-extrabold text-slate-900 dark:text-white">{stats?.totalMedicines || 0}</span>
               <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Pharmacy Stock Types</span>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 backdrop-blur-sm">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                <DollarSign className="w-5 h-5" />
+              </div>
+              <span className="block text-3xl font-extrabold text-slate-900 dark:text-white">₹{Number(stats?.totalSales || 0).toLocaleString('en-IN')}</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Total Pharmacy Sales</span>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 backdrop-blur-sm">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                <ShoppingCart className="w-5 h-5" />
+              </div>
+              <span className="block text-3xl font-extrabold text-slate-900 dark:text-white">{stats?.totalOrders || 0}</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Pharmacy Orders</span>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 backdrop-blur-sm">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">
+                <CheckCircle2 className="w-5 h-5" />
+              </div>
+              <span className="block text-3xl font-extrabold text-slate-900 dark:text-white">{stats?.completedAppointments || 0}</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Completed Appointments</span>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900/90 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 backdrop-blur-sm">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+                <Clock3 className="w-5 h-5" />
+              </div>
+              <span className="block text-3xl font-extrabold text-slate-900 dark:text-white">{stats?.pendingAppointments || 0}</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Pending Appointments</span>
             </div>
           </div>
         )}

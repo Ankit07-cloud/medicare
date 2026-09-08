@@ -99,7 +99,7 @@ const Footer = () => {
             <a href="https://www.instagram.com/medicare-health" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
               <Instagram className="w-4 h-4" /> Instagram
             </a>
-            <a href="https://github.com/Ankit07-cloud/medi-care" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+            <a href="https://github.com/Ankit07-cloud/medicare" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
               <Github className="w-4 h-4" /> GitHub
             </a>
             <a href="https://www.x.com/medicare-health" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">

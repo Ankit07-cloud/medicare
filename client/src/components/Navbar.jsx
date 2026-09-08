@@ -22,6 +22,7 @@ const Navbar = () => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -63,46 +64,50 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'text-primary bg-primary/10 font-semibold'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-          </nav>
+          {!isAuthPage && (
+            <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'text-primary bg-primary/10 font-semibold'
+                        : 'text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          )}
 
           {/* Action Buttons, Theme Switcher & Profile */}
           <div className="hidden md:flex items-center gap-3">
             
-            {/* Theme Selector */}
-            <ThemeToggle />
+            {!isAuthPage && (
+              <>
+                <ThemeToggle />
 
-            {/* Pharmacy Cart Button */}
-            <Link
-              to="/pharmacy"
-              className="relative p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-              title="View Pharmacy Cart"
-            >
-              <ShoppingBag className="w-5 h-5 text-secondary" />
-              {totalCartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-secondary text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">
-                  {totalCartCount}
-                </span>
-              )}
-            </Link>
+                <Link
+                  to="/pharmacy"
+                  className="relative p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                  title="View Pharmacy Cart"
+                >
+                  <ShoppingBag className="w-5 h-5 text-secondary" />
+                  {totalCartCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-secondary text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">
+                      {totalCartCount}
+                    </span>
+                  )}
+                </Link>
+              </>
+            )}
 
-            {user ? (
+            {!isAuthPage && user ? (
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -182,25 +187,34 @@ const Navbar = () => {
 
           {/* Mobile menu button & Theme toggle */}
           <div className="flex md:hidden items-center gap-2">
-            <ThemeToggle />
-            <Link
-              to="/pharmacy"
-              className="relative p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {totalCartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-secondary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                  {totalCartCount}
-                </span>
-              )}
-            </Link>
+            {isAuthPage ? (
+              <div className="flex items-center gap-2">
+                <Link to="/login" className="px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200">Log In</Link>
+                <Link to="/register" className="px-3 py-2 rounded-xl text-xs font-semibold bg-primary text-white">Register</Link>
+              </div>
+            ) : (
+              <>
+                <ThemeToggle />
+                <Link
+                  to="/pharmacy"
+                  className="relative p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200"
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                  {totalCartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-secondary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                      {totalCartCount}
+                    </span>
+                  )}
+                </Link>
 
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                >
+                  {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

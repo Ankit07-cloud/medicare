@@ -34,23 +34,9 @@ import ManagePatients from './pages/admin/ManagePatients';
 import ManageMedicines from './pages/admin/ManageMedicines';
 import ViewAppointments from './pages/admin/ViewAppointments';
 
-const hideFooterRoutes = [
-  '/admin',
-  '/admin/doctors',
-  '/admin/patients',
-  '/admin/medicines',
-  '/admin/appointments',
-  '/patient/dashboard',
-  '/patient/appointments',
-  '/patient/profile',
-  '/doctor/dashboard',
-  '/doctor/appointments',
-  '/doctor/profile'
-];
-
 const AppLayout = () => {
   const location = useLocation();
-  const shouldHideFooter = hideFooterRoutes.includes(location.pathname);
+  const shouldShowFooter = location.pathname === '/about';
 
   return (
     <div className="flex flex-col min-h-screen bg-background transition-colors duration-300">
@@ -168,7 +154,7 @@ const AppLayout = () => {
           />
         </Routes>
       </div>
-      {!shouldHideFooter && <Footer />}
+      {shouldShowFooter && <Footer />}
     </div>
   );
 };
